@@ -1,0 +1,60 @@
+.profile-wrapper {
+  position: relative;
+}
+
+.profile-trigger {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.profile-dropdown {
+  position: absolute;
+  right: 0;
+  top: 130%;
+  width: 280px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.profile-header {
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-header span {
+  display: block;
+  font-size: 13px;
+  color: #666;
+}
+
+.profile-header strong {
+  font-size: 16px;
+}
+
+.profile-stats {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: #f9fafb;
+}
+
+.profile-menu {
+  padding: 8px 0;
+}
+
+.menu-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.menu-item:hover {
+  background: #f3f4f6;
+}
+
+.menu-item.danger {
+  color: #e53935;
+}
