@@ -7,9 +7,10 @@ export default function Profile() {
     <div className="p-10">
       <h1 className="text-3xl font-bold">Profile</h1>
 
-      <p className="mt-4"><b>Username:</b> {user.username}</p>
+      <p className="mt-4"><b>Username:</b> {user.name}</p>
       <p><b>Email:</b> {user.email}</p>
       <p><b>Phone:</b> {user.phone}</p>
     </div>
   );
 }
+
