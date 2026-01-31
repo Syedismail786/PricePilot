@@ -11,7 +11,7 @@ export default function ProductRow({ title, products = [] }) {
       <div className="flex gap-6 overflow-x-auto pb-3">
         {products.map(p => (
           <div key={p._id} className="min-w-[220px]">
-            <ProductCard p={p} />   {/* ✅ correct prop */} q
+            <ProductCard p={p} />   {/* ✅ correct prop */} 
           </div>
         ))}
       </div>
@@ -19,3 +19,4 @@ export default function ProductRow({ title, products = [] }) {
     </div>
   );
 }
+
