@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+const API = process.env.REACT_APP_API_URL;
+
 export default function Signup() {
   const navigate = useNavigate();
 
@@ -18,7 +20,7 @@ export default function Signup() {
       return;
     }
 
-    const res = await fetch("http://127.0.0.1:8000/signup", {
+    const res = await fetch(`${API}/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
