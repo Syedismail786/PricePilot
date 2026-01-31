@@ -7,7 +7,9 @@ export default function ProfileDropdown() {
   const ref = useRef(null);
   const navigate = useNavigate();
 
-  const name = localStorage.getItem("userName") || "User";
+  const user = JSON.parse(localStorage.getItem("user"));
+const name = user?.name || "User";
+
 
   useEffect(() => {
     const handleClick = (e) => {
