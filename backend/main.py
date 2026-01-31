@@ -1,9 +1,13 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from urllib.parse import unquote
+from pymongo import MongoClient
 
 from auth import register_user, login_user
 from models import SignupRequest, LoginRequest
 from services import fetch_prices, compress_prices
+
+# -------------------- APP --------------------
 
 app = FastAPI()
 
@@ -14,7 +18,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------- AUTH ----------
+# -------------------- DATABASE --------------------
+
+client = MongoClient("mongodb://mongo:27017")
+db = client["Price_Compression_App"]
+
+users = db["users"]
+prices = db["prices"]
+products_collection = db["Product"]
+
+# -------------------- AUTH --------------------
 
 @app.post("/signup")
 def signup(data: SignupRequest):
@@ -41,42 +54,57 @@ def login(data: LoginRequest):
     return result
 
 
-# ---------- PRICE COMPARISON ----------
+# -------------------- PRICE COMPARISON --------------------
 
 @app.get("/compare/{product}")
 def compare(product: str):
-
     raw_prices = fetch_prices(product)
 
     if not raw_prices:
         raise HTTPException(status_code=404, detail="Product not found")
 
     return compress_prices(raw_prices)
-from database import products_collection
 
-# ✅ GET ALL PRODUCTS (Big Deals)
+
+# -------------------- PRODUCTS --------------------
+
+# ✅ ALL PRODUCTS
 @app.get("/products")
 def get_all_products():
     products = list(products_collection.find({}, {"_id": 0}))
     return products
 
 
-# ✅ GET BY CATEGORY
+# ✅ CATEGORY (FIXED FOR PUBLIC SERVER)
 @app.get("/products/{category}")
 def get_by_category(category: str):
+    category = unquote(category)
+
     products = list(
         products_collection.find(
-            {"category": category},
+            {
+                "category": {
+                    "$regex": f"^{category}$",
+                    "$options": "i"
+                }
+            },
             {"_id": 0}
         )
     )
+
     return products
+
+
+# ✅ SEARCH (FIXED)
 @app.get("/products/search/{query}")
 def search_products(query: str):
+    query = unquote(query)
+
     products = list(
         products_collection.find(
             {"name": {"$regex": query, "$options": "i"}},
             {"_id": 0}
         )
     )
+
     return products
