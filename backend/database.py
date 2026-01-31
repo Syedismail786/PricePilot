@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 
+# Mongo connection (Docker-safe, also works locally if mongo is running)
 client = MongoClient("mongodb://localhost:27017")
 
 db = client["Price_Compression_App"]
