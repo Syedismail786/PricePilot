@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+const API = process.env.REACT_APP_API_URL;
+
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -9,7 +11,7 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("http://127.0.0.1:8000/login", {
+    const res = await fetch(`${API}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
@@ -28,10 +30,8 @@ export default function Login() {
 
   return (
     <div className="login-wrapper">
-      {/* 🌄 Animated Background */}
       <div className="login-bg"></div>
 
-      {/* 💎 Center Card */}
       <div className="relative z-10 flex items-center justify-center min-h-screen">
         <form onSubmit={handleLogin} className="login-card">
 
