@@ -2,7 +2,6 @@ fastapi
 uvicorn
 python-jose[cryptography]
 passlib
-bcrypt==3.2.2
 pymongo
 python-dotenv
 pydantic
