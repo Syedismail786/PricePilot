@@ -2,10 +2,10 @@ export default function ProductCard({ product }) {
 
   if (!product) return null;
 
-  const formatINR = (v) => Number(v).toLocaleString("en-IN");
+  const formatINR = v => Number(v).toLocaleString("en-IN");
 
-  const amazon = Number(product.amazonPrice);
-  const flipkart = Number(product.flipkartPrice);
+  const amazon = Number(product.amazonPrice || 0);
+  const flipkart = Number(product.flipkartPrice || 0);
 
   if (!amazon && !flipkart) return null;
 
@@ -13,23 +13,23 @@ export default function ProductCard({ product }) {
   const bestStore = amazon <= flipkart ? "Amazon" : "Flipkart";
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all flex flex-col">
+    <div className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-lg transition flex flex-col h-full">
 
-      {/* IMAGE */}
-      <div className="bg-gray-50 rounded-xl p-4 mb-4 flex justify-center">
+      {/* IMAGE — fixed height */}
+      <div className="bg-gray-50 rounded-xl h-52 flex items-center justify-center mb-4">
         <img
           src={product.image}
           alt={product.name}
-          className="h-44 object-contain"
+          className="max-h-44 object-contain"
         />
       </div>
 
-      {/* TITLE */}
-      <h3 className="font-semibold text-sm leading-snug mb-4 line-clamp-3">
+      {/* TITLE — fixed height */}
+      <h3 className="font-semibold text-sm leading-snug mb-4 line-clamp-3 min-h-[60px]">
         {product.name}
       </h3>
 
-      {/* PRICES */}
+      {/* PRICES — fixed block */}
       <div className="space-y-1 text-sm mb-4">
 
         <div className="flex justify-between">
@@ -48,15 +48,15 @@ export default function ProductCard({ product }) {
 
       </div>
 
-      {/* BEST PRICE */}
-      <div className="bg-blue-50 rounded-xl py-3 text-center mb-6">
+      {/* BEST PRICE — fixed */}
+      <div className="bg-blue-50 rounded-xl py-3 text-center mb-5 min-h-[70px]">
         <p className="text-xs text-gray-600">Best on {bestStore}</p>
         <p className="text-lg font-bold text-blue-700">
           ₹{formatINR(bestPrice)}
         </p>
       </div>
 
-      {/* BUTTONS */}
+      {/* BUTTONS ALWAYS AT BOTTOM */}
       <div className="mt-auto flex gap-2">
 
         <a
