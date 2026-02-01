@@ -1,12 +1,11 @@
-export default function ProductCard({ p }) {
+export default function ProductCard({ product }) {
 
-  if (!p) return null;
+  if (!product) return null;
 
-  const formatINR = (price) =>
-    Number(price || 0).toLocaleString("en-IN");
+  const formatINR = (v) => Number(v).toLocaleString("en-IN");
 
-  const amazon = Number(p.amazonPrice || 0);
-  const flipkart = Number(p.flipkartPrice || 0);
+  const amazon = Number(product.amazonPrice);
+  const flipkart = Number(product.flipkartPrice);
 
   if (!amazon && !flipkart) return null;
 
@@ -14,69 +13,69 @@ export default function ProductCard({ p }) {
   const bestStore = amazon <= flipkart ? "Amazon" : "Flipkart";
 
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col min-w-[220px]">
+    <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all flex flex-col">
 
       {/* IMAGE */}
-      <div className="bg-gray-50 rounded-xl p-4 mb-4 flex justify-center items-center h-48">
+      <div className="bg-gray-50 rounded-xl p-4 mb-4 flex justify-center">
         <img
-          src={p.image}
-          alt={p.name}
-          className="max-h-full object-contain"
-          onError={(e) => e.target.src = "/no-image.png"}
+          src={product.image}
+          alt={product.name}
+          className="h-44 object-contain"
         />
       </div>
 
-      {/* NAME */}
-      <h3 className="font-semibold text-sm mb-4 line-clamp-2">
-        {p.name}
+      {/* TITLE */}
+      <h3 className="font-semibold text-sm leading-snug mb-4 line-clamp-3">
+        {product.name}
       </h3>
 
       {/* PRICES */}
-      <div className="space-y-1 mb-4 text-sm">
+      <div className="space-y-1 text-sm mb-4">
+
         <div className="flex justify-between">
-          <span>Amazon</span>
+          <span className="text-gray-500">Amazon</span>
           <span className="text-blue-600 font-semibold">
             ₹{formatINR(amazon)}
           </span>
         </div>
 
         <div className="flex justify-between">
-          <span>Flipkart</span>
+          <span className="text-gray-500">Flipkart</span>
           <span className="text-green-600 font-semibold">
             ₹{formatINR(flipkart)}
           </span>
         </div>
+
       </div>
 
-      {/* BEST */}
-      <div className="bg-blue-50 rounded-xl py-3 text-center mb-4">
-        <p className="text-xs">Best price on {bestStore}</p>
+      {/* BEST PRICE */}
+      <div className="bg-blue-50 rounded-xl py-3 text-center mb-6">
+        <p className="text-xs text-gray-600">Best on {bestStore}</p>
         <p className="text-lg font-bold text-blue-700">
           ₹{formatINR(bestPrice)}
         </p>
       </div>
 
-      {/* LINKS */}
+      {/* BUTTONS */}
       <div className="mt-auto flex gap-2">
+
         <a
-          href={p.amazonLink}
+          href={product.amazonLink}
           target="_blank"
-          rel="noopener noreferrer"
           className="flex-1 bg-yellow-400 hover:bg-yellow-500 py-2 rounded-lg text-center font-semibold"
         >
           Amazon
         </a>
 
         <a
-          href={p.flipkartLink}
+          href={product.flipkartLink}
           target="_blank"
-          rel="noopener noreferrer"
           className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-center font-semibold"
         >
           Flipkart
         </a>
-      </div>
 
+      </div>
     </div>
   );
 }
