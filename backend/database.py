@@ -1,13 +1,13 @@
 from pymongo import MongoClient
 
-# Mongo connection (Docker-safe, also works locally if mongo is running)
-client = MongoClient("mongodb://mongo:27017")
+# Local MongoDB (where your real data exists)
+MONGO_URL = "mongodb://127.0.0.1:27017"
 
+client = MongoClient(MONGO_URL)
 
+# Database
 db = client["Price_Compression_App"]
 
-# collections
+# Collections
 users = db["users"]
-prices = db["prices"]
 products_collection = db["Product"]
-
