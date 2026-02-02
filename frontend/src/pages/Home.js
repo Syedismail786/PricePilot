@@ -9,57 +9,91 @@ import CreditCardOffers from "../components/CreditCardOffers";
 import PromoAds from "../components/PromoAds";
 import ProductRow from "../components/ProductRow";
 
-const API = "http://18.118.142.235:8000";
-;
+// Backend API
+const API = "http://localhost:8000";
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [category, setCategory] = useState(null);
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
+  // Scroll to top on category change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [category]);
 
-  const handleSearch = (query) => {
+  // 🔍 Search
+  const handleSearch = async (query) => {
     if (!query.trim()) return;
 
-    fetch(`${API}/products/search/${query}`)
-      .then(res => res.json())
-      .then(data => {
-        setProducts(data);
-        setCategory("SEARCH");
-      })
-      .catch(console.error);
+    try {
+      setLoading(true);
+      const res = await fetch(`${API}/products/search/${query}`);
+      const data = await res.json();
+      setProducts(data);
+      setCategory("SEARCH");
+    } catch (err) {
+      console.error("Search error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // 📦 Load all products
   useEffect(() => {
-    fetch(`${API}/products`)
-      .then(res => res.json())
-      .then(setProducts)
-      .catch(console.error);
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`${API}/products`);
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error("Fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
   }, []);
 
+  // 📂 Load by category (sidebar click)
   useEffect(() => {
     if (!category || category === "SEARCH") return;
-    if (category === "Big Deals") return;
 
     if (category === "Credit Cards") {
       setProducts([]);
       return;
     }
 
-    fetch(`${API}/products/${category}`)
-      .then(res => res.json())
-      .then(setProducts)
-      .catch(console.error);
+    const loadCategory = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`${API}/products/${category}`);
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error("Category error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    loadCategory();
   }, [category]);
+
+  /* ---------------- CATEGORY FILTERING ---------------- */
+
+  const mobiles = products.filter(p => p.category === "Mobiles");
+  const laptops = products.filter(p => p.category === "Laptops");
+  const tvs = products.filter(p => p.category === "TVs");
 
   return (
     <>
       <Navbar onMenu={() => setMenuOpen(true)} onSearch={handleSearch} />
 
+      {/* Sidebar */}
       {menuOpen && (
         <div className="fixed inset-0 z-50 flex">
           <CategorySidebar
@@ -74,33 +108,59 @@ export default function Home() {
             }}
             onClose={() => setMenuOpen(false)}
           />
-          <div className="flex-1 bg-black/40" onClick={() => setMenuOpen(false)} />
+          <div
+            className="flex-1 bg-black/40"
+            onClick={() => setMenuOpen(false)}
+          />
         </div>
       )}
 
       <main className="pt-24 min-h-screen bg-gray-50">
         <div className="max-w-[1280px] mx-auto px-6">
 
+          {/* HOME UI */}
           {!category && (
             <>
               <HeroBanner />
               <TopCategories onSelect={setCategory} />
               <PromoAds />
 
-              {products.length > 0 && (
-                <>
-                  <ProductRow title="Trending Deals" products={products.slice(0, 8)} />
-                  <ProductRow title="Best Electronics" products={products.slice(8, 16)} />
-                  <ProductRow title="Top Picks For You" products={products.slice(16, 24)} />
-                </>
+              {mobiles.length > 0 && (
+                <ProductRow
+                  title="Trending Deals"
+                  products={mobiles.slice(0, 8)}
+                />
+              )}
+
+              {laptops.length > 0 && (
+                <ProductRow
+                  title="Best Electronics"
+                  products={laptops.slice(0, 8)}
+                />
+              )}
+
+              {tvs.length > 0 && (
+                <ProductRow
+                  title="Top Picks For You"
+                  products={tvs.slice(0, 8)}
+                />
               )}
             </>
           )}
 
-          {category && category !== "Credit Cards" && (
+          {/* LOADING */}
+          {loading && (
+            <p className="text-center py-20 text-gray-500">
+              Loading products...
+            </p>
+          )}
+
+          {/* CATEGORY / SEARCH GRID */}
+          {category && !loading && (
             <ProductComparison products={products} />
           )}
 
+          {/* CREDIT CARD OFFERS */}
           {category === "Credit Cards" && <CreditCardOffers />}
 
         </div>
@@ -108,4 +168,3 @@ export default function Home() {
     </>
   );
 }
-
