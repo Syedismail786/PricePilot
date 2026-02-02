@@ -2,7 +2,6 @@ from passlib.context import CryptContext
 from jose import jwt
 import os
 
-# load from env (fallback only for dev)
 SECRET_KEY = os.getenv("JWT_SECRET", "dev_secret")
 ALGORITHM = "HS256"
 
