@@ -1,10 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from urllib.parse import unquote
-from pymongo import MongoClient
 
 from auth import register_user, login_user
 from models import SignupRequest, LoginRequest
+from database import products_collection   # ✅ use shared DB connection
+
+# ---------------- APP ----------------
 
 app = FastAPI()
 
@@ -14,12 +16,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# ---------------- DB ----------------
-
-client = MongoClient("mongodb://mongo:27017")
-db = client["Price_Compression_App"]
-products_collection = db["Product"]
 
 # ---------------- AUTH ----------------
 
@@ -42,6 +38,7 @@ def login(data: LoginRequest):
 def get_all_products():
     return list(products_collection.find({}, {"_id": 0}))
 
+
 @app.get("/products/{category}")
 def get_by_category(category: str):
     category = unquote(category)
@@ -52,6 +49,7 @@ def get_by_category(category: str):
             {"_id": 0}
         )
     )
+
 
 @app.get("/products/search/{query}")
 def search_products(query: str):
@@ -64,14 +62,14 @@ def search_products(query: str):
         )
     )
 
-# ---------------- COMPARE (FIXED) ----------------
+# ---------------- COMPARE ----------------
 
 @app.get("/compare/{product}")
 def compare(product: str):
     product = unquote(product)
 
     item = products_collection.find_one(
-        {"name": {"$regex": product, "$options": "i"}},
+        {"name": {"$regex": f".*{product}.*", "$options": "i"}},
         {"_id": 0}
     )
 
