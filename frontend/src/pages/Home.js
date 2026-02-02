@@ -9,7 +9,8 @@ import CreditCardOffers from "../components/CreditCardOffers";
 import PromoAds from "../components/PromoAds";
 import ProductRow from "../components/ProductRow";
 
-const API = process.env.REACT_APP_API_URL;
+const API = "http://18.118.142.235:8000";
+;
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -107,3 +108,4 @@ export default function Home() {
     </>
   );
 }
+
